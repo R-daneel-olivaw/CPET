@@ -4,7 +4,7 @@ Created on Feb 25, 2015
 @author: Akshat
 '''
 
-import module1.psutil as psutil
+import psutil
 from module1.ds.procRecord import ProcRecord
 from time import sleep
 import csv
