@@ -18,16 +18,16 @@ class ProcessProbe:
         self.PROCNAME = processName
         self.stepDelay = stepDelay
 
-    def isMatch(self,proc, name):
+    def isMatch(self, proc, name):
         return name in repr(proc)
         
-    def addToCSV(self,writer, mango):
+    def addToCSV(self, writer, mango):
         # writer.appe(mango.getTime(), mango.getCpu(), mango.getMem())
         seq = mango.toSequence()
         writer.writerow(seq)
         return
     
-    def getPidForProcessName(self,procName):
+    def getPidForProcessName(self, procName):
         for proc in psutil.process_iter():
             if self.isMatch(proc, self.PROCNAME):
                 # print(proc)
@@ -55,12 +55,17 @@ class ProcessProbe:
                 for i in range(0, 150):
                     
                     cpu = proc.get_cpu_percent(interval=0)
-                    mem = proc.get_memory_info()[0] / float(2 ** 20)
-                    
-                    
-                    rec = ProcRecord(cpu, mem)
+                    mem = proc.get_memory_info()[0] / float(2 ** 20)                    
+                    diskIo = proc.get_io_counters()
+                                        
                     print(procId, 'cpu = ', cpu)
                     print(procId, 'memory = ', mem)
+                    print(procId, 'disk_read_count = ', diskIo[0])
+                    print(procId, 'disk_write_count = ', diskIo[1])
+                    print(procId, 'disk_read_bytes = ', diskIo[2])
+                    print(procId, 'disk_write_bytes = ', diskIo[3])
+                    
+                    rec = ProcRecord(cpu, mem, diskIo[0], diskIo[1], diskIo[2], diskIo[3])
                     
                     sleep(self.stepDelay)
                     
