@@ -23,13 +23,13 @@ class Analyst(object):
     
     def getPeakCpu(self):
         
-        maxCpu = self.concatenated['cpuperc'].argmax()
+        maxCpu = self.concatenated['cpuperc'].max()
         
         return maxCpu
     
     def getPeakMem(self):
         
-        memMax = self.concatenated['memmb'].argmax()
+        memMax = self.concatenated['memmb'].max()
         
         return memMax
     
