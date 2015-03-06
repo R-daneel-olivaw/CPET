@@ -57,6 +57,7 @@ class ProcessProbe:
                     cpu = proc.get_cpu_percent(interval=0)
                     mem = proc.get_memory_info()[0] / float(2 ** 20)                    
                     diskIo = proc.get_io_counters()
+                    netc = len(proc.connections())
                                         
                     print(procId, 'cpu = ', cpu)
                     print(procId, 'memory = ', mem)
@@ -64,8 +65,10 @@ class ProcessProbe:
                     print(procId, 'disk_write_count = ', diskIo[1])
                     print(procId, 'disk_read_bytes = ', diskIo[2])
                     print(procId, 'disk_write_bytes = ', diskIo[3])
+                    print(procId, 'network counters = ', netc)
+                    print()
                     
-                    rec = ProcRecord(cpu, mem, diskIo[0], diskIo[1], diskIo[2], diskIo[3])
+                    rec = ProcRecord(cpu, mem, diskIo[0], diskIo[1], diskIo[2], diskIo[3],netc)
                     
                     sleep(self.stepDelay)
                     
