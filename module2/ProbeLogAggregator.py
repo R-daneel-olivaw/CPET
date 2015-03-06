@@ -24,7 +24,7 @@ class PrbLogAgg:
             self.dataFrame.append(df)
             
             self.concatenated = pd.concat(self.dataFrame, ignore_index=True)
-            self.concatenated.columns = ['time', 'cpuperc', 'memmb', 'readcount', 'writecount', 'readbytes', 'writebyte']
+            self.concatenated.columns = ['time', 'cpuperc', 'memmb', 'readcount', 'writecount', 'readbytes', 'writebyte','netConnCount']
         
     def getDataFrame(self):
         
