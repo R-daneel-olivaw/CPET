@@ -12,7 +12,7 @@ class ProcRecord(object):
     '''
 
 
-    def __init__(self, procCpu=None, procMem=None, procReadCount=None, procWriteCount=None, procReadb=None, procWriteb=None):
+    def __init__(self, procCpu=None, procMem=None, procReadCount=None, procWriteCount=None, procReadb=None, procWriteb=None, procNetConnCount=None):
         self.cpu = procCpu
         self.mem = procMem
         self.readc = procReadCount
@@ -20,6 +20,7 @@ class ProcRecord(object):
         self.readb = procReadb
         self.writeb = procWriteb
         self.recordTime = time.time()
+        self.netConnCount = procNetConnCount
         '''
         Constructor
         '''
@@ -37,6 +38,8 @@ class ProcRecord(object):
         return self.writeb;
     def getTime(self):
         return self.recordTime
+    def getConnectionCount(self):
+        return self.netConnCount
     def toSequence(self):
         seq = []
         # CSV sequence
@@ -47,6 +50,7 @@ class ProcRecord(object):
         seq.append(self.getWritec())
         seq.append(self.getReadb())
         seq.append(self.getWriteb())
+        seq.append(self.getConnectionCount())
         # CSV sequence
         
         return seq
