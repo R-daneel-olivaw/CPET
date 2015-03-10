@@ -14,7 +14,7 @@ class ProcessProbe:
     PROCNAME = None
     p_map = {}
     k_list = [0]
-    o_map={}
+    o_map = {}
     
     def __init__(self, processName, stepDelay=0.5):
         self.PROCNAME = processName
@@ -44,15 +44,17 @@ class ProcessProbe:
     def appendChildProcesses(self, proc_id):
         
         for p in proc_id:
-            try:
-                c_process = psutil.Process(p)
-                childs = c_process.children(recursive=True)
-                for chp in childs:
-                    proc_id[p].append(chp.pid)
-                    proc_id[p] = set(proc_id[p])
+            #try:
+            c_process = psutil.Process(p)
+            childs = c_process.children(recursive=True)
+            for chp in childs:
+                proc_id[p].append(chp.pid)
+            proc_id[p] = list(set(proc_id[p]))
+        '''
             except:
                 print('process ', p, 'lost')
-                continue    
+                continue
+        '''    
     
 
     def get_process(self, p):
@@ -64,9 +66,14 @@ class ProcessProbe:
         return self.o_map[p]
     
     
+    def probe_process(self, p, pRec):
+        # TODO: implement
+        pass
+    
+    
     def startProbe(self):
         
-        #parent_id = self.getPidForProcessName(self.PROCNAME)
+        # parent_id = self.getPidForProcessName(self.PROCNAME)
         parent_id = 7832
         self.p_map[parent_id] = [parent_id]
         
@@ -117,6 +124,8 @@ class ProcessProbe:
                                 
                                     try:
                                         
+                                        #pRec = self.probe_process(p,pRec)
+                                        
                                         proc = self.get_process(p)
                                             
                                         cpu += proc.get_cpu_percent(interval=0)
@@ -143,11 +152,11 @@ class ProcessProbe:
                                         print("process lost..")
                                         self.k_list.append(p)
                                             
-                                rec = ProcRecord(cpu, mem, disk_rc, disk_wc, disk_rb, disk_wb, netc)
+                            rec = ProcRecord(cpu, mem, disk_rc, disk_wc, disk_rb, disk_wb, netc, len(p_childs))
                                                     
-                                self.addToCSV(writer, rec)
+                            self.addToCSV(writer, rec)
                                 
-                                sleep(0.5)
+                                #sleep(0.5)
                     else:
                         print('parent lost')
                         self.k_list.append(parent)
