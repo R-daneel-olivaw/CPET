@@ -43,6 +43,45 @@ class ProcRecord(object):
         return self.netConnCount
     def getChildCount(self):
         return self.childCount
+    
+    def setCpu(self,cpu):
+        self.cpu = cpu
+    def setMem(self,mem):
+        self.mem = mem
+    def setReadc(self,readc):
+        self.readc = readc
+    def setWritec(self,writec):
+        self.writec = writec
+    def setReadb(self, readb):
+        self.readb = readb
+    def setWriteb(self, writeb):
+        self.writeb = writeb
+    def setTime(self, recordTime):
+        self.recordTime = recordTime
+    def setConnectionCount(self, netConnnCount):
+        self.netConnCount = netConnnCount
+    def setChildCount(self, childCount):
+        self.childCount = childCount    
+        
+    def addCpu(self,cpu):
+        self.cpu += cpu
+    def addMem(self,mem):
+        self.mem += mem
+    def addReadc(self,readc):
+        self.readc += readc
+    def addWritec(self,writec):
+        self.writec += writec
+    def addReadb(self, readb):
+        self.readb += readb
+    def addWriteb(self, writeb):
+        self.writeb += writeb
+    def addTime(self, recordTime):
+        self.recordTime += recordTime
+    def addConnectionCount(self, netConnnCount):
+        self.netConnCount += netConnnCount
+    def addChildCount(self, childCount):
+        self.childCount += childCount  
+    
     def toSequence(self):
         seq = []
         # CSV sequence
