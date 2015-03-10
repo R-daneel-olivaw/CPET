@@ -12,7 +12,9 @@ import csv
 class ProcessProbe:
     
     PROCNAME = None
-    procId = [];
+    p_map = {}
+    k_list = [0]
+    o_map={}
     
     def __init__(self, processName, stepDelay=0.5):
         self.PROCNAME = processName
@@ -39,70 +41,124 @@ class ProcessProbe:
         return self.PROCNAME   
 
 
-    def getChildProcesses(self, proc_id):
+    def appendChildProcesses(self, proc_id):
         
-        child_id = []
         for p in proc_id:
             try:
                 c_process = psutil.Process(p)
                 childs = c_process.children(recursive=True)
                 for chp in childs:
-                    child_id.append(chp.pid)
+                    proc_id[p].append(chp.pid)
+                    proc_id[p] = set(proc_id[p])
             except:
                 print('process ', p, 'lost')
-                continue
+                continue    
+    
+
+    def get_process(self, p):
         
-        return child_id
+        if p not in self.o_map:
+            pr = psutil.Process(p)
+            self.o_map[p] = pr            
+        
+        return self.o_map[p]
     
     
     def startProbe(self):
-        self.procId.append(self.getPidForProcessName(self.PROCNAME))
         
-        self.procId.append(self.getChildProcesses(self.procId))
+        #parent_id = self.getPidForProcessName(self.PROCNAME)
+        parent_id = 7832
+        self.p_map[parent_id] = [parent_id]
         
-        print(self.procId)
+        # self.procId.append(self.getPidForProcessName(self.PROCNAME))
+        
+        print(self.p_map)
                 
                 # print(proc)
                 # print(proc.cpu_times())
-        for p in self.procId: 
+        while True:
             
-            if(p==0):
-                self.procId.remove(0)
-                continue
+            self.appendChildProcesses(self.p_map)
             
-            fileCsv = open('D:/Lectures/Winter2015/CS854/project/PickelTest/' + self.PROCNAME + '.csv', 'a')
-            writer = csv.writer(fileCsv, delimiter=',', quoting=csv.QUOTE_NONE, lineterminator='\n')
+            buffer = {}
+            for parent in self.p_map:
+                if psutil.pid_exists(parent) and parent != 0:
+                    buffer[parent] = self.p_map[parent]
             
-            proc = psutil.Process(p)
+            self.p_map = buffer
             
-            try:
-                for i in range(0, 150):
+            if not self.p_map:
+                break
+            
+            for parent in self.p_map:
+                
+                fileCsv = open('D:/Lectures/Winter2015/CS854/project/PickelTest/' + self.PROCNAME + '.csv', 'a')
+                writer = csv.writer(fileCsv, delimiter=',', quoting=csv.QUOTE_NONE, lineterminator='\n')
+                
+                try:
+                
+                    if(parent not in self.k_list):
                     
-                    cpu = proc.get_cpu_percent(interval=0)
-                    mem = proc.get_memory_info()[0] / float(2 ** 20)                    
-                    diskIo = proc.get_io_counters()
-                    netc = len(proc.connections())
+                        cpu = 0
+                        mem = 0
+                        disk_rc = 0
+                        disk_wc = 0
+                        disk_rb = 0
+                        disk_wb = 0
+                        netc = 0
+                        
+                        if psutil.pid_exists(parent):
+                            
+                            p_childs = self.p_map[parent]
+                            
+                            for p in p_childs: 
+                                
+                                if(p not in self.k_list):
+                                
+                                    try:
                                         
-                    print(p, 'cpu = ', cpu)
-                    print(p, 'memory = ', mem)
-                    print(p, 'disk_read_count = ', diskIo[0])
-                    print(p, 'disk_write_count = ', diskIo[1])
-                    print(p, 'disk_read_bytes = ', diskIo[2])
-                    print(p, 'disk_write_bytes = ', diskIo[3])
-                    print(p, 'network counters = ', netc)
-                    print()
+                                        proc = self.get_process(p)
+                                            
+                                        cpu += proc.get_cpu_percent(interval=0)
+                                        mem += proc.get_memory_info()[0] / float(2 ** 20)    
+                                                        
+                                        diskIo = proc.get_io_counters()
+                                        disk_rc += diskIo[0]
+                                        disk_wc += diskIo[1]
+                                        disk_rb += diskIo[2]
+                                        disk_wb += diskIo[3]
+                                        
+                                        netc += len(proc.connections())
+                                                                
+                                        print(p, 'cpu = ', cpu)
+                                        print(p, 'memory = ', mem)
+                                        print(p, 'disk_read_count = ', diskIo[0])
+                                        print(p, 'disk_write_count = ', diskIo[1])
+                                        print(p, 'disk_read_bytes = ', diskIo[2])
+                                        print(p, 'disk_write_bytes = ', diskIo[3])
+                                        print(p, 'network counters = ', netc)
+                                        print()
+                                            
+                                    except:
+                                        print("process lost..")
+                                        self.k_list.append(p)
+                                            
+                                rec = ProcRecord(cpu, mem, disk_rc, disk_wc, disk_rb, disk_wb, netc)
+                                                    
+                                self.addToCSV(writer, rec)
+                                
+                                sleep(0.5)
+                    else:
+                        print('parent lost')
+                        self.k_list.append(parent)
+                        continue
                     
-                    rec = ProcRecord(cpu, mem, diskIo[0], diskIo[1], diskIo[2], diskIo[3], netc)
-                    
-                    sleep(self.stepDelay)
-                    
-                    self.addToCSV(writer, rec)
-            except:
-                print("process lost..")
-                self.procId.remove(p)
-            finally:
-                if fileCsv:
-                    fileCsv.close()
+                finally:
+                    if fileCsv:
+                        fileCsv.close()
+                        
+            sleep(self.stepDelay)
+            
         print("Terminating...")
 
 
