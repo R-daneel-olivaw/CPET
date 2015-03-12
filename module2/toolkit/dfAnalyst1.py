@@ -3,6 +3,7 @@ Created on Mar 3, 2015
 
 @author: Akshat
 '''
+from pandas.core.frame import DataFrame
 
 class Analyst(object):
     '''
@@ -33,8 +34,14 @@ class Analyst(object):
         
         return memMax
     
-    def get90thpercentile(self):
+    def getPercentile(self, trg_percentile):
         
-        percentile = self.concatenated.quantile(0.9, axis=0)
+        percentile = self.concatenated.quantile(trg_percentile, axis=0)
         
-        return percentile
+        
+        percentile_df = DataFrame(percentile)
+        
+        column_name = trg_percentile * 100
+        percentile_df.columns = [str(column_name)]
+        
+        return percentile_df

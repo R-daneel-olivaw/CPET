@@ -5,7 +5,7 @@ Created on Mar 6, 2015
 '''
 
 def exem2():
-    probeAgg = PrbLogAgg('D:/Lectures/Winter2015/CS854/project/PickelTest/vlc.exe.csv')
+    probeAgg = PrbLogAgg('D:/Lectures/Winter2015/CS854/project/PickelTest/chrome.exe.csv')
     probeAgg.loadDataFrame()
     df = probeAgg.getDataFrame()
 
@@ -14,7 +14,9 @@ def exem2():
     print('Peak CPU = ',a.getPeakCpu())
     print('Peak Mem = ',a.getPeakMem())
 
-    print('Percentile = \n',a.get90thpercentile())
+    percentile_df = a.getPercentile(0.95)
+    #print(percentile_df.describe())
+    print('Percentile = \n',percentile_df)
 
 if __name__ == '__main__':
     from module2.ProbeLogAggregator import PrbLogAgg
