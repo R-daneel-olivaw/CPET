@@ -10,9 +10,6 @@ def run_m3():
     
     table_html = table_html.replace("\n", "").replace("\t", "").strip()
     
-    print(table_html)
-    
-    #clp = CloudlookParser('<table><tr><th>Event</th><th>Start Date</th><th>End Date</th></tr><tr><td>a</td><td>b</td><td>c</td></tr><tr><td>d</td><td>e</td><td>f</td></tr><tr><td>g</td><td>h</td><td>i</td></tr><tr><td>a</td><td>b</td><td>c</td></tr><tr><td>d</td><td>e</td><td>f</td></tr><tr><td>g</td><td>h</td><td>i</td></tr></table>').start()
     clp = CloudlookParser(table_html).start()
     print(clp)
 

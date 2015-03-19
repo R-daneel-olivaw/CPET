@@ -5,11 +5,15 @@ Created on Mar 19, 2015
 '''
 from lxml import etree
 from bs4 import BeautifulSoup
+from itertools import cycle
 
 class CloudlookParser(object):
     '''
     classdocs
     '''
+    
+    ec2_srv = []
+    columns = []
     
     def start(self):
         
@@ -29,18 +33,50 @@ class CloudlookParser(object):
             print ('No table rows found, exiting')
             return 1
         
-        for row in rows:
-            try:
-                cells = table.find_all('td')
-                
-                for cell in cells:
-                    print(cell)
-                
-            except AttributeError as e:
-                print ('No table cells found, exiting')
-                return 1
+       
+        try:
+            cells = rows[0].find_all('th')
+            
+            for cell in cells:
+                c_txt = cell.get_text()
+                if c_txt:
+                    self.columns.append(c_txt)
+            
+            #print(self.columns)
+            self.columns.remove('Cloud Server')
+            rows.remove(rows[0])
+            
+        except AttributeError as e:
+            print ('No table cells found, exiting')
+            return 1
         
-        return 
+        for row in rows:
+            # try:
+            srv_name = row.find('th')
+            if not srv_name:
+                continue
+            # print(srv_name.get_text())
+            # print(row)
+            
+            srv_entry = {}
+            srv_entry['Cloud Server'] = srv_name.get_text() 
+            
+            cells = row.find_all('td', text=lambda x: (len(x) > 0) if (x is not None) else False)
+            #print(list(zip(self.columns, cells)))
+            for di, cell in zip(self.columns, cells):
+                
+                srv_entry[di] = cell.get_text()
+                #print( cell.get_text())
+                # print(srv_entry[di])
+            
+            self.ec2_srv.append(srv_entry)
+            #print('------')    
+            # except AttributeError as e:
+                # print ('No table cells found, exiting')
+                # return 1
+        
+        
+        return self.ec2_srv
 
     def __init__(self, html_table):
         '''
