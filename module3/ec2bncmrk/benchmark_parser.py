@@ -4,6 +4,7 @@ Created on Mar 19, 2015
 @author: Akshat
 '''
 from lxml import etree
+from bs4 import BeautifulSoup
 
 class CloudlookParser(object):
     '''
@@ -12,16 +13,34 @@ class CloudlookParser(object):
     
     def start(self):
         
-        s = self.html_table
-        bm_rows=[]
-        table = etree.XML(s)
-        rows = iter(table)
-        headers = [col.text for col in next(rows)]
-        for row in rows:
-            values = [col.text for col in row]
-            bm_rows.append(dict(zip(headers, values)))
+        # Get table
+        try:
+            soup = BeautifulSoup(self.html_table)
+            table = soup.find('table', {"class" : "table table-condensed front-stats"})
+        except AttributeError as e:
+            print ('No tables found, exiting')
+            return 1
         
-        return bm_rows
+        # Get rows
+        try:
+            rows = table.find_all('tr')
+            
+        except AttributeError as e:
+            print ('No table rows found, exiting')
+            return 1
+        
+        for row in rows:
+            try:
+                cells = table.find_all('td')
+                
+                for cell in cells:
+                    print(cell)
+                
+            except AttributeError as e:
+                print ('No table cells found, exiting')
+                return 1
+        
+        return 
 
     def __init__(self, html_table):
         '''
