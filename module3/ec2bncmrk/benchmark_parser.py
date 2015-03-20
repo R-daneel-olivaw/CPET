@@ -3,9 +3,12 @@ Created on Mar 19, 2015
 
 @author: Akshat
 '''
-from lxml import etree
-from bs4 import BeautifulSoup
 from itertools import cycle
+
+from bs4 import BeautifulSoup
+
+import pandas as pd
+
 
 class CloudlookParser(object):
     '''
@@ -42,7 +45,7 @@ class CloudlookParser(object):
                 if c_txt:
                     self.columns.append(c_txt)
             
-            #print(self.columns)
+            # print(self.columns)
             self.columns.remove('Cloud Server')
             rows.remove(rows[0])
             
@@ -62,21 +65,31 @@ class CloudlookParser(object):
             srv_entry['Cloud Server'] = srv_name.get_text() 
             
             cells = row.find_all('td', text=lambda x: (len(x) > 0) if (x is not None) else False)
-            #print(list(zip(self.columns, cells)))
+            # print(list(zip(self.columns, cells)))
             for di, cell in zip(self.columns, cells):
                 
                 srv_entry[di] = cell.get_text()
-                #print( cell.get_text())
+                # print( cell.get_text())
                 # print(srv_entry[di])
             
             self.ec2_srv.append(srv_entry)
-            #print('------')    
+            # print('------')    
             # except AttributeError as e:
                 # print ('No table cells found, exiting')
                 # return 1
+        df = self.convert_to_df(self.ec2_srv)
         
+        return df
+    
+    def convert_to_df(self, dict_list):
+        benchDf = pd.DataFrame()
         
-        return self.ec2_srv
+        for rec in dict_list:
+            benchDf = benchDf.append(rec, ignore_index=True)
+        
+        benchDf = benchDf.set_index('Cloud Server')
+        
+        return benchDf
 
     def __init__(self, html_table):
         '''
