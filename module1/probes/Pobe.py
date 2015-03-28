@@ -8,6 +8,8 @@ import psutil
 from module1.ds.procRecord import ProcRecord
 from time import sleep
 import csv
+import os, platform, subprocess, re
+from subprocess import check_output
 
 class ProcessProbe:
     
@@ -65,6 +67,32 @@ class ProcessProbe:
         
         return self.o_map[p]
     
+    def get_processor_speed(self):
+        if platform.system() == "Windows":
+            pro_info = check_output("wmic cpu get name,CurrentClockSpeed,MaxClockSpeed", shell=True)
+            pro_info = str(pro_info, "utf-8")
+            pro_info = pro_info.splitlines()[2]
+            
+            pro_info = pro_info.split(sep=None, maxsplit=1)[0].strip()
+            return int(pro_info)
+        elif platform.system() == "Darwin":
+            import os
+            os.environ['PATH'] = os.environ['PATH'] + os.pathsep + '/usr/sbin'
+            command = "sysctl -n machdep.cpu.brand_string"
+            print('os not supported')
+            print(subprocess.check_output(command).strip())
+            return 100
+        elif platform.system() == "Linux":
+            command = "cat /proc/cpuinfo"
+            all_info = subprocess.check_output(command, shell=True).strip()
+            for line in all_info.split("\n"):
+                if "model name" in line:
+                    print('os not supported')
+                    print(re.sub(".*model name.*:", "", line, 1))
+                    return 100
+        print('os not supported')
+        return 100
+    
     
     def probe_process(self, p, rec):
         # TODO: implement
@@ -72,6 +100,9 @@ class ProcessProbe:
         proc = self.get_process(p)
         try:                                    
             cpu = proc.get_cpu_percent(interval=0)
+            cpu_speed = self.get_processor_speed()
+            cpu = float("{0:.2f}".format(cpu_speed * (cpu / 100)))
+            
             mem = proc.get_memory_info()[0] / float(2 ** 20)    
                             
             diskIo = proc.get_io_counters()
@@ -113,7 +144,7 @@ class ProcessProbe:
     def startProbe(self):
         
         parent_id = self.getPidForProcessName(self.PROCNAME)
-        #parent_id = 7832
+        # parent_id = 7832
         self.p_map[parent_id] = [parent_id]
         
         # self.procId.append(self.getPidForProcessName(self.PROCNAME))
@@ -123,6 +154,8 @@ class ProcessProbe:
                 # print(proc)
                 # print(proc.cpu_times())
         try:
+            
+            fileCsv = None
             while True:
                 
                 self.appendChildProcesses(self.p_map)
@@ -150,7 +183,7 @@ class ProcessProbe:
                             rec = None
                             for p in p_childs:                                 
                                 if(p not in self.k_list):                                                             
-                                    rec = self.probe_process(p,rec)                            
+                                    rec = self.probe_process(p, rec)                            
                             self.addToCSV(writer, rec)
                                     
                         else:
@@ -164,6 +197,5 @@ class ProcessProbe:
             if fileCsv:
                 fileCsv.close()
         print("Terminating...")
-
-
+        
     
