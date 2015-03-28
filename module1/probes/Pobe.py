@@ -143,6 +143,8 @@ class ProcessProbe:
     
     def startProbe(self):
         
+        print('STARTING PROBE FOR ',self.PROCNAME)
+        
         parent_id = self.getPidForProcessName(self.PROCNAME)
         # parent_id = 7832
         self.p_map[parent_id] = [parent_id]

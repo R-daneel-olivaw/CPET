@@ -3,10 +3,13 @@ Created on Mar 6, 2015
 
 @author: Akshat
 '''
+process_names = ['chrome.exe','thunderbird.exe']
+
 def exem1():
-    probe1 = ProcessProbe('thunderbird.exe',1)
-    probe1.startProbe()
+    
+    ProbeThreadController(process_names).start_probes()
+    
 
 if __name__ == '__main__':
-    from module1.probes.Pobe import ProcessProbe
+    from module1.probe_thread_controller import ProbeThreadController
     exem1()
