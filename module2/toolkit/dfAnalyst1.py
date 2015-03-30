@@ -11,7 +11,6 @@ class Analyst(object):
     '''
 
     prbArgLogs = None
-    concatenated = None
 
     def __init__(self, prbLogs):
         '''
@@ -19,7 +18,6 @@ class Analyst(object):
         '''
         
         self.prbArgLogs = prbLogs
-        self.concatenated = self.prbArgLogs.concatenated
     
     
     def getPeakCpu(self):
