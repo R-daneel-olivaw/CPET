@@ -6,7 +6,7 @@ Created on Mar 6, 2015
 output_directory_path = 'C:/Users/Akshat/git/CPET/output/m2'
 
 def exem2():
-    probeAgg = PrbLogAgg(output_directory_path, csvFilePath=['D:/Lectures/Winter2015/CS854/project/PickelTest/chrome.exe.csv', 'D:/Lectures/Winter2015/CS854/project/PickelTest/thunderbird.exe.csv'])
+    probeAgg = PrbLogAgg(output_directory_path, csvFilePath=['C:/Users/Akshat/git/CPET/output/m1/chrome.exe.csv', 'C:/Users/Akshat/git/CPET/output/m1/thunderbird.exe.csv','C:/Users/Akshat/git/CPET/output/m1/eclipse.exe.csv'])
     probeAgg.loadDataFrame()
 
     a = Analyst(probeAgg)
