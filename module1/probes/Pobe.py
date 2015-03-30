@@ -10,6 +10,7 @@ from time import sleep
 import csv
 import os, platform, subprocess, re
 from subprocess import check_output
+import copy
 
 class ProcessProbe:
     
@@ -18,9 +19,10 @@ class ProcessProbe:
     k_list = [0]
     o_map = {}
     
-    def __init__(self, processName, stepDelay=0.5):
+    def __init__(self, processName, output_path, stepDelay=0.5):
         self.PROCNAME = processName
         self.stepDelay = stepDelay
+        self.output_path = output_path
 
     def isMatch(self, proc, name):
         return name in repr(proc)
@@ -43,20 +45,25 @@ class ProcessProbe:
         return self.PROCNAME   
 
 
-    def appendChildProcesses(self, proc_id):
+    def appendChildProcesses(self):
         
-        for p in proc_id:
+        c_proc_id = copy.deepcopy(self.p_map)
+        parent_id = self.getPidForProcessName(self.PROCNAME)
+        # parent_id = 7832
+        c_proc_id[parent_id] = [parent_id]
+        
             # try:
-            c_process = psutil.Process(p)
-            childs = c_process.children(recursive=True)
-            for chp in childs:
-                proc_id[p].append(chp.pid)
-            proc_id[p] = list(set(proc_id[p]))
+        c_process = psutil.Process(parent_id)
+        childs = c_process.children(recursive=True)
+        for chp in childs:
+            c_proc_id[parent_id].append(chp.pid)
+            c_proc_id[parent_id] = list(set(c_proc_id[parent_id]))
         '''
             except:
                 print('process ', p, 'lost')
                 continue
         '''    
+        self.p_map = c_proc_id
     
 
     def get_process(self, p):
@@ -95,10 +102,10 @@ class ProcessProbe:
     
     
     def probe_process(self, p, rec):
-        # TODO: implement
         
-        proc = self.get_process(p)
-        try:                                    
+        try:      
+            proc = self.get_process(p)
+                                          
             cpu = proc.get_cpu_percent(interval=0)
             cpu_speed = self.get_processor_speed()
             cpu = float("{0:.2f}".format(cpu_speed * (cpu / 100)))
@@ -143,7 +150,7 @@ class ProcessProbe:
     
     def startProbe(self):
         
-        print('STARTING PROBE FOR ',self.PROCNAME)
+        print('STARTING PROBE FOR ', self.PROCNAME)
         
         parent_id = self.getPidForProcessName(self.PROCNAME)
         # parent_id = 7832
@@ -160,7 +167,7 @@ class ProcessProbe:
             fileCsv = None
             while True:
                 
-                self.appendChildProcesses(self.p_map)
+                self.appendChildProcesses()
                 
                 buffer = {}
                 for parent in self.p_map:
@@ -174,7 +181,7 @@ class ProcessProbe:
                 
                 for parent in self.p_map:
                     
-                    fileCsv = open('D:/Lectures/Winter2015/CS854/project/PickelTest/' + self.PROCNAME + '.csv', 'a')
+                    fileCsv = open(self.output_path + self.PROCNAME + '.csv', 'a')
                     writer = csv.writer(fileCsv, delimiter=',', quoting=csv.QUOTE_NONE, lineterminator='\n')
                     
                     
