@@ -13,9 +13,9 @@ class PrbLogAgg:
     
     dataFrame = []
     csv = []
-    concatenated = None
 
-    def __init__(self, *csvFilePath):
+    def __init__(self,output_directory, *csvFilePath):
+        self.output_directory = output_directory
         self.csv = csvFilePath
         
     def loadDataFrame(self):
@@ -23,9 +23,14 @@ class PrbLogAgg:
             df = pd.read_csv(path)
             self.dataFrame.append(df)
             
-            self.concatenated = pd.concat(self.dataFrame, ignore_index=True)
-            self.concatenated.columns = ['time', 'cpuperc', 'memmb', 'readcount', 'writecount', 'readbytes', 'writebyte','netConnCount','childProcCount']
+        for i_df in self.dataFrame:
+            
+            i_df.columns = ['time', 'cpuperc', 'memmb', 'readcount', 'writecount', 'readbytes', 'writebyte','netConnCount','childProcCount']
         
-    def getDataFrame(self):
+    def getDataFrame(self, index):
         
-        return self.concatenated
+        return self.dataFrame[index]
+    
+    def getdataFrames(self):
+        
+        return self.dataFrame
