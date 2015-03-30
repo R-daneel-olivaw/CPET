@@ -15,6 +15,9 @@ def exem2():
     report_dict = a.calculate_percentiles()
     dom = parseString(report_dict)
     print(dom.toprettyxml())
+    
+    with open(output_directory_path + "/Output.xml", "w+") as text_file:
+        print(dom.toprettyxml(), file=text_file)
     # print(percentile_df.describe())
     # print('Percentile = /n', percentile_df)
 
