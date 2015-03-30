@@ -5,6 +5,7 @@ Created on Mar 3, 2015
 '''
 from pandas.core.frame import DataFrame
 from module2.ds.process_report import SingleProcessReport, ProcessReportDitionary
+import module2.dicttoxml.dicttoxml as dicttoxml
 
 class Analyst(object):
     '''
@@ -74,7 +75,9 @@ class Analyst(object):
             
             rep_dict.addProcessReport(s_rep, prs_name)
         
-        return rep_dict
+        xml = str(dicttoxml.dicttoxml(rep_dict.getAllProcessReport(), attr_type=False), 'utf-8')
+        
+        return xml
             
             
             

@@ -13,14 +13,13 @@ def exem2():
     # print(df)
 
     report_dict = a.calculate_percentiles()
-    
-    xml = str(dicttoxml.dicttoxml(report_dict.getAllProcessReport(), attr_type=False), 'utf-8')
-    print(xml)
+    dom = parseString(report_dict)
+    print(dom.toprettyxml())
     # print(percentile_df.describe())
     # print('Percentile = /n', percentile_df)
 
 if __name__ == '__main__':
     from module2.ProbeLogAggregator import PrbLogAgg
     from module2.toolkit.dfAnalyst1 import Analyst
-    import module2.dicttoxml.dicttoxml as dicttoxml
+    from xml.dom.minidom import parseString
     exem2()
