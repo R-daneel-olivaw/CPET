@@ -20,22 +20,21 @@ class Analyst(object):
         self.prbArgLogs = prbLogs
     
     
-    def getPeakCpu(self):
+    def getPeakCpu(self, df):
         
-        maxCpu = self.concatenated['cpuperc'].max()
+        maxCpu = df['cpuperc'].max()
         
         return maxCpu
     
-    def getPeakMem(self):
+    def getPeakMem(self, df):
         
-        memMax = self.concatenated['memmb'].max()
+        memMax = df['memmb'].max()
         
         return memMax
     
-    def getPercentile(self, trg_percentile):
+    def getPercentile(self, df, trg_percentile):
         
-        percentile = self.concatenated.quantile(trg_percentile, axis=0)
-        
+        percentile = df.quantile(trg_percentile, axis=0)
         
         percentile_df = DataFrame(percentile)
         
@@ -43,3 +42,23 @@ class Analyst(object):
         percentile_df.columns = [str(column_name)]
         
         return percentile_df
+    
+    def getPercentileLst(self, df, trg_percentile):
+        
+        percentile_df = df.quantile(trg_percentile, axis=0)
+        
+        return percentile_df
+    
+    def calculate_percentiles(self):
+        
+        for prs_name, df in self.prbArgLogs.getDataFrames().items():
+            
+            peak_cpu = self.getPeakCpu(df)
+            peak_mem = self.getPeakMem(df)
+            
+            percentile_df = self.getPercentileLst(df, [0.5, 0.9, 0.95])
+            
+            print(percentile_df)
+            
+            
+            

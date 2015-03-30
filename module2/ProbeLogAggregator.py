@@ -15,7 +15,7 @@ class PrbLogAgg:
     dataFrame = {}
     csv = []
 
-    def __init__(self, output_directory, *csvFilePath):
+    def __init__(self, output_directory, csvFilePath):
         self.output_directory = output_directory
         self.csv = csvFilePath
         
@@ -24,7 +24,7 @@ class PrbLogAgg:
             df = pd.read_csv(path)
             self.dataFrame[self.path_leaf(path)] = df
             
-        for i_df in self.dataFrame:
+        for f_name, i_df in self.dataFrame.items():
             
             i_df.columns = ['time', 'cpuperc', 'memmb', 'readcount', 'writecount', 'readbytes', 'writebyte', 'netConnCount', 'childProcCount']
         
@@ -32,7 +32,7 @@ class PrbLogAgg:
         
         return self.dataFrame[logfile_name]
     
-    def getdataFrames(self):
+    def getDataFrames(self):
         
         return self.dataFrame
     
