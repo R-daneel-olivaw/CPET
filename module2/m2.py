@@ -12,11 +12,15 @@ def exem2():
     a = Analyst(probeAgg)
     # print(df)
 
-    percentile_df = a.calculate_percentiles()
+    report_dict = a.calculate_percentiles()
+    
+    xml = str(dicttoxml.dicttoxml(report_dict.getAllProcessReport(), attr_type=False), 'utf-8')
+    print(xml)
     # print(percentile_df.describe())
     # print('Percentile = /n', percentile_df)
 
 if __name__ == '__main__':
     from module2.ProbeLogAggregator import PrbLogAgg
     from module2.toolkit.dfAnalyst1 import Analyst
+    import module2.dicttoxml.dicttoxml as dicttoxml
     exem2()

@@ -32,10 +32,12 @@ class ProcessReportDitionary(object):
 
 class SingleProcessReport:
     
-    def __init__(self, peak_value_dict, percentile_50_dict, percentile_90_dict, percentile_95_dict):
+    def __init__(self, peak_value_dict, percentile_50_dict,percentile_75_dict, percentile_90_dict, percentile_95_dict):
         self.peak_value_dict = peak_value_dict
         self.percentile_50_dict = percentile_50_dict
+        self.percentile_75_dict = percentile_75_dict
         self.percentile_90_dict = percentile_90_dict
         self.percentile_95_dict = percentile_95_dict
+        
         
         

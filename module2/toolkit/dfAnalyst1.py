@@ -4,6 +4,7 @@ Created on Mar 3, 2015
 @author: Akshat
 '''
 from pandas.core.frame import DataFrame
+from module2.ds.process_report import SingleProcessReport, ProcessReportDitionary
 
 class Analyst(object):
     '''
@@ -51,14 +52,29 @@ class Analyst(object):
     
     def calculate_percentiles(self):
         
+        rep_dict = ProcessReportDitionary()
+        
         for prs_name, df in self.prbArgLogs.getDataFrames().items():
             
-            peak_cpu = self.getPeakCpu(df)
-            peak_mem = self.getPeakMem(df)
+            percentile_df = self.getPercentileLst(df, [0.5, 0.75, 0.9, 0.95, 1])
+            percentile_dict = percentile_df.T.to_dict('dict')
             
-            percentile_df = self.getPercentileLst(df, [0.5, 0.9, 0.95])
+            peak_dict = percentile_dict[1]
+            percentile_50_dict = percentile_dict[0.5]
+            percentile_75_dict = percentile_dict[0.75]
+            percentile_90_dict = percentile_dict[0.9]
+            percentile_95_dict = percentile_dict[0.95]
+           
+            s_rep = {}
+            s_rep['peak'] = peak_dict
+            s_rep['percentile_50'] = percentile_50_dict
+            s_rep['percentile_75'] = percentile_75_dict
+            s_rep['percentile_90'] = percentile_90_dict
+            s_rep['percentile_95'] = percentile_95_dict
             
-            print(percentile_df)
+            rep_dict.addProcessReport(s_rep, prs_name)
+        
+        return rep_dict
             
             
             
