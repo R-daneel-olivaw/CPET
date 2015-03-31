@@ -58,26 +58,18 @@ class Analyst(object):
         for prs_name, df in self.prbArgLogs.getDataFrames().items():
             
             percentile_df = self.getPercentileLst(df, [0.5, 0.75, 0.9, 0.95, 1])
-            percentile_dict = percentile_df.T.to_dict('dict')
+            perc_collumns = list(percentile_df.columns.values)
             
-            peak_dict = percentile_dict[1]
-            percentile_50_dict = percentile_dict[0.5]
-            percentile_75_dict = percentile_dict[0.75]
-            percentile_90_dict = percentile_dict[0.9]
-            percentile_95_dict = percentile_dict[0.95]
-           
             s_rep = {}
-            s_rep['peak'] = peak_dict
-            s_rep['percentile_50'] = percentile_50_dict
-            s_rep['percentile_75'] = percentile_75_dict
-            s_rep['percentile_90'] = percentile_90_dict
-            s_rep['percentile_95'] = percentile_95_dict
+            for prop in perc_collumns:
+                prop_list = percentile_df[prop].tolist()
+                
+                s_rep[prop] = prop_list
             
             rep_dict.addProcessReport(s_rep, prs_name)
         
-        xml = str(dicttoxml.dicttoxml(rep_dict.getAllProcessReport(), attr_type=False), 'utf-8')
         
-        return xml
+        return rep_dict.getAllProcessReport()
             
             
             

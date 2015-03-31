@@ -13,16 +13,15 @@ def exem2():
     # print(df)
 
     report_dict = a.calculate_percentiles()
-    dom = parseString(report_dict)
-    print(dom.toprettyxml())
+    print(report_dict)
     
-    with open(output_directory_path + "/Output.xml", "w+") as text_file:
-        print(dom.toprettyxml(), file=text_file)
+    m2o.generate_op(report_dict, output_directory_path+'/Output2.xml')
+    
     # print(percentile_df.describe())
     # print('Percentile = /n', percentile_df)
 
 if __name__ == '__main__':
     from module2.ProbeLogAggregator import PrbLogAgg
     from module2.toolkit.dfAnalyst1 import Analyst
-    from xml.dom.minidom import parseString
+    import module2.toolkit.m2_output as m2o
     exem2()
