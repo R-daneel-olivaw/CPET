@@ -90,13 +90,10 @@ class ProcessProbe:
             print(subprocess.check_output(command).strip())
             return 100
         elif platform.system() == "Linux":
-            command = "cat /proc/cpuinfo"
-            all_info = subprocess.check_output(command, shell=True).strip()
-            for line in all_info.split("\n"):
-                if "model name" in line:
-                    print('os not supported')
-                    print(re.sub(".*model name.*:", "", line, 1))
-                    return 100
+            cpu_mhz = check_output("lscpu | grep MHz", shell=True)
+            cpu_mhz = str(cpu_mhz,'utf-8')
+            f_cpu_mhz = float(cpu_mhz.split(':')[1].strip())
+
         print('os not supported')
         return 100
     
