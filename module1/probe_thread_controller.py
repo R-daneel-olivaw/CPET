@@ -26,7 +26,7 @@ class ProbeThreadController(object):
         
             print(process)  
         
-            probe1 = ProcessProbe(process, self.output_path, 1)
+            probe1 = ProcessProbe(process, self.output_path, 0.5)
             worker = Thread(target=probe1.startProbe)
             worker.start()
             

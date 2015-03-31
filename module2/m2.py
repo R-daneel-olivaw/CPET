@@ -25,10 +25,10 @@ def exem2():
     
     parse_config('../cpet_config.ini')
     
-    print('output_file_path = ',output_file_path)
-    print('input_log_file_path_list = ',input_log_file_path_list)
+    print('output_file_path = ', output_file_path)
+    print('input_log_file_path_list = ', input_log_file_path_list)
     
-    probeAgg = PrbLogAgg(output_file_path, csvFilePath= input_log_file_path_list)
+    probeAgg = PrbLogAgg(output_file_path, csvFilePath=input_log_file_path_list)
     probeAgg.loadDataFrame()
 
     a = Analyst(probeAgg)
@@ -36,7 +36,7 @@ def exem2():
 
     report_dict = a.calculate_percentiles()
     
-    m2o.generate_op(report_dict, output_file_path)
+    m2o.generate_op(report_dict, output_file_path + 'm2_output.anu')
     
     # print(percentile_df.describe())
     # print('Percentile = /n', percentile_df)
