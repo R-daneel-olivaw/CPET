@@ -93,6 +93,8 @@ class ProcessProbe:
             cpu_mhz = check_output("lscpu | grep MHz", shell=True)
             cpu_mhz = str(cpu_mhz,'utf-8')
             f_cpu_mhz = float(cpu_mhz.split(':')[1].strip())
+            
+            return f_cpu_mhz
 
         print('os not supported')
         return 100
