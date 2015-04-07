@@ -31,8 +31,6 @@ class StressController:
         
     def start_stress(self):
         
-        self.parse_config(self.ini_path)
-        
         for i in range(1, self.process_count):
             
             worker = Thread(target=self.i_stress(self.shell_command))   

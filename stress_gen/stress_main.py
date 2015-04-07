@@ -17,10 +17,10 @@ def parse_config(ini_path):
     stress_config = config['stress_controller']
     
     global proc_count
-    proc_count = int(stress_config['proc_count '])
+    proc_count = int(stress_config['proc_count'])
     
     global shell_command 
-    shell_command  = stress_config['shell_command ']
+    shell_command  = stress_config['shell_command']
 #     global output_path
 #     output_path = stress_config['output_path']
 #     global process_pid
