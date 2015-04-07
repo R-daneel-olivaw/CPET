@@ -19,7 +19,11 @@ class ProcessProbe:
     k_list = [0]
     o_map = {}
     
-    def __init__(self, processName, output_path, stepDelay=0.5):
+    def __init__(self, processName, pid=None, output_path=None, stepDelay=0.5):
+        if pid:
+            self.pid = int(pid)
+        else:
+            self.pid = None
         self.PROCNAME = processName
         self.stepDelay = stepDelay
         self.output_path = output_path
@@ -32,6 +36,18 @@ class ProcessProbe:
         seq = mango.toSequence()
         writer.writerow(seq)
         return
+    
+    def getProcessNameForPid(self, pid):
+        
+        p = psutil.Process(int(pid))
+        p_name = p.name()
+        
+        return p_name
+    
+    def getProcessForPid(self, pid):
+        p = psutil.Process(pid)
+        
+        return p
     
     def getPidForProcessName(self, procName):
         for proc in psutil.process_iter():
@@ -91,7 +107,7 @@ class ProcessProbe:
             return 100
         elif platform.system() == "Linux":
             cpu_mhz = check_output("lscpu | grep MHz", shell=True)
-            cpu_mhz = str(cpu_mhz,'utf-8')
+            cpu_mhz = str(cpu_mhz, 'utf-8')
             f_cpu_mhz = float(cpu_mhz.split(':')[1].strip())
             
             return f_cpu_mhz
@@ -149,9 +165,16 @@ class ProcessProbe:
     
     def startProbe(self):
         
+        parent_id = None
+        if self.pid:
+            self.PROCNAME = self.getProcessNameForPid(self.pid)
+            parent_id = self.pid
+        else :
+            parent_id = self.getPidForProcessName(self.PROCNAME)
+            
         print('STARTING PROBE FOR ', self.PROCNAME)
         
-        parent_id = self.getPidForProcessName(self.PROCNAME)
+        
         # parent_id = 7832
         self.p_map[parent_id] = [parent_id]
         

@@ -13,10 +13,11 @@ class ProbeThreadController(object):
     '''
     worker_list = []
 
-    def __init__(self, process_names, output_path):
+    def __init__(self, process_names, process_pid, output_path):
         '''
         Constructor
         '''
+        self.process_pid = process_pid
         self.process_names = process_names
         self.output_path = output_path
     
@@ -26,7 +27,17 @@ class ProbeThreadController(object):
         
             print(process)  
         
-            probe1 = ProcessProbe(process, self.output_path, 0.5)
+            probe1 = ProcessProbe(process, pid=None, output_path=self.output_path, stepDelay=0.5)
+            worker = Thread(target=probe1.startProbe)
+            worker.start()
+            
+            self.worker_list.append(worker)
+            
+        for process in self.process_pid:
+            
+            print(process)  
+        
+            probe1 = ProcessProbe(processName=None, pid=process, output_path=self.output_path, stepDelay=0.5)
             worker = Thread(target=probe1.startProbe)
             worker.start()
             
