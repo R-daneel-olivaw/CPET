@@ -203,7 +203,10 @@ class ProcessProbe:
                 
                 for parent in self.p_map:
                     
-                    fileCsv = open(self.output_path + self.PROCNAME + '.csv', 'a')
+                    if self.pid:
+                        fileCsv = open(self.output_path + self.PROCNAME + str(self.pid) + '.csv', 'a')
+                    else:
+                        fileCsv = open(self.output_path + self.PROCNAME + '.csv', 'a')
                     writer = csv.writer(fileCsv, delimiter=',', quoting=csv.QUOTE_NONE, lineterminator='\n')
                     
                     
