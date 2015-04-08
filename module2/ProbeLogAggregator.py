@@ -19,7 +19,7 @@ class PrbLogAgg:
         self.output_directory = output_directory
         self.csv = csvFilePath
         
-    def plotGraph(self, df, file_name):
+    def plotGraph(self, df, clm, collumn_name, file_name):
         
         # Set some Pandas options
         pd.set_option('display.notebook_repr_html', False)
@@ -27,8 +27,18 @@ class PrbLogAgg:
         pd.set_option('display.max_rows', 25)
         
         # For Graph Plot
-        df.plot(subplots=True, figsize=(20, 60)); plt.legend(loc='best')
-        plt.savefig(self.output_directory + file_name + '.png', bbox_inches='tight')
+        # df.plot(subplots=True, figsize=(20, 60)); plt.legend(loc='best')
+        
+        fig = plt.figure()
+        ax = fig.add_subplot(1, 1, 1)  # one row, one column, first plot
+        ax.set_title(collumn_name + " vs. Time")
+        ax.set_xlabel("Time")
+        ax.set_ylabel(collumn_name)
+        ax.scatter(df.time, clm, alpha=0.5, edgecolors='none') 
+        ax.set_ylim(1)
+        ax.set_xlim(df.time.max(), df.time.min())
+        ax.invert_xaxis()
+        fig.savefig(self.output_directory + file_name + '.png', bbox_inches='tight')
         
     def loadDataFrame(self):
         for path in self.csv:
@@ -39,7 +49,14 @@ class PrbLogAgg:
             
             i_df.columns = ['time', 'cpuperc', 'memmb', 'readcount', 'writecount', 'readbytes', 'writebyte', 'netConnCount', 'childProcCount']
             
-            self.plotGraph(i_df, 'test')
+            self.plotGraph(i_df, i_df.cpuperc, 'CPU', 'test_cpu')
+            self.plotGraph(i_df, i_df.memmb, 'RAM', 'test_mem')
+            self.plotGraph(i_df, i_df.readcount, 'Disk-read-count', 'test_dskRc')
+            self.plotGraph(i_df, i_df.writecount, 'Disk-write-count', 'test_dskWc')
+            self.plotGraph(i_df, i_df.readbytes, 'Disk-read-bytes', 'test_dskRb')
+            self.plotGraph(i_df, i_df.writebyte, 'Disk-write-bytes', 'test_dskWb')
+            self.plotGraph(i_df, i_df.netConnCount, 'Net-connection-count', 'test_netCon')
+            self.plotGraph(i_df, i_df.childProcCount, 'Child-proc-count', 'test_childProc')
         
     def getDataFrame(self, logfile_name):
         
