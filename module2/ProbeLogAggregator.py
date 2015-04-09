@@ -52,9 +52,9 @@ class PrbLogAgg:
         ax4 = plt.subplot(gs[1, 1])
         ax5 = plt.subplot(gs[1, 2])
         
-        self.plotGraph(ax0, i_df, i_df.cpuperc, 'CPU')
+        self.plotGraph(ax0, i_df, i_df.cpuperc, 'CPU(Mhz)')
         
-        self.plotGraph(ax1, i_df, i_df.memmb, 'RAM')
+        self.plotGraph(ax1, i_df, i_df.memmb, 'RAM(Mb)')
         
         self.plotGraph(ax2, i_df, i_df.readcount, 'Disk-read-count')
         
