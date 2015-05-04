@@ -1,5 +1,6 @@
 # CPET
 Cloud Price Estimation Tool
+
 [Final Report](http://www.slideshare.net/akshatvaish/cpet-project-report)
 
 Course project for University of Waterloo course CS854(https://cs.uwaterloo.ca/~bernard/courses/cs854-W15/)
